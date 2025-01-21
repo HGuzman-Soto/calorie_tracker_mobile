@@ -12,8 +12,11 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
+  const router = useRouter();
+
   const weekData = [
     { day: 'Mon', calories: 2000 },
     { day: 'Tue', calories: 3000 },
@@ -33,7 +36,7 @@ export default function HomeScreen() {
         {weekData.map((item) => (
           <View style={styles.dayContainer} key={item.day}>
             <Text style={styles.dayText}>{item.day}</Text>
-            <Text style={styles.calText}>{item.cal}</Text>
+            <Text style={styles.calText}>{item.calories}</Text>
           </View>
         ))}
       </View>
@@ -47,10 +50,7 @@ export default function HomeScreen() {
       {/* The big + button at the bottom/center for adding a new entry */}
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => {
-          // TODO: Navigate to or open your "add entry" screen/form
-          console.log('Add new entry...');
-        }}
+        onPress={() => router.push('/(tabs)/AddFoodScreen')}
       >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   },
   calText: {
     fontSize: 14,
-    color: '#333',
+    color: '#777',
   },
   todayContainer: {
     alignItems: 'center',
