@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { BACKEND_URL } from '@env';
 
 export default function AddFoodScreen() {
+  const backendURL = process.env.EXPO_PUBLIC_BACKEND_URL
   const router = useRouter(); // For going back or navigating around
   const [foodName, setFoodName] = useState('');
   const [calories, setCalories] = useState('');
@@ -11,7 +11,7 @@ export default function AddFoodScreen() {
   const handleSubmit = async () => {
     try {
       console.log('making a request to the backend');
-      const response = await fetch(`${BACKEND_URL}/api/calories`, {
+      const response = await fetch(`${backendURL}/api/calories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
