@@ -1,0 +1,14 @@
+runtime: python39 # Specify the Python runtime version.
+service: calories-backend # This will be replaced dynamically
+entrypoint: python3 run.py # Define the command to start your application.
+
+handlers:
+  - url: /.*
+    script: auto
+
+health_check:
+  enable_health_check: True
+  check_interval_sec: 5
+  timeout_sec: 4
+  unhealthy_threshold: 2
+  healthy_threshold: 2

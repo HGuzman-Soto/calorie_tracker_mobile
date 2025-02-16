@@ -1,11 +1,35 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import { BACKEND_URL } from '@env';
 
 export default function AddFoodScreen() {
   const router = useRouter(); // For going back or navigating around
   const [foodName, setFoodName] = useState('');
   const [calories, setCalories] = useState('');
+
+  const handleSubmit = async () => {
+    try {
+      console.log('making a request to the backend');
+      const response = await fetch(`${BACKEND_URL}/api/calories`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ foodName, calories }),
+      });
+
+      if (response.ok) {
+        Alert.alert('Success', 'Food added successfully');
+        router.back();
+      } else {
+        Alert.alert('Error', 'Failed to add food');
+      }
+    } catch (error) {
+      console.error('Error adding food:', error);
+      Alert.alert('Error', 'Failed to connect to the server');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -26,13 +50,7 @@ export default function AddFoodScreen() {
         keyboardType='numeric'
       />
 
-      <Button
-        title='Submit'
-        onPress={() => {
-          // For now, just navigate back
-          router.back();
-        }}
-      />
+      <Button title='Submit' onPress={handleSubmit} />
     </View>
   );
 }
@@ -47,6 +65,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 4,
+    color: '#fff',
   },
   input: {
     borderWidth: 1,
@@ -55,5 +74,6 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 4,
     marginBottom: 16,
+    color: '#fff',
   },
 });
