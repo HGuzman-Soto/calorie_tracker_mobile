@@ -1,20 +1,12 @@
 from flask import request, g, jsonify
 from flask import Blueprint
 import logging
-import signal
 from datetime import datetime
 
 bp = Blueprint('calories', __name__, url_prefix='/api/calories')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Timeout handler
-def timeout_handler(signum, frame):
-    raise TimeoutError("Request timed out")
-
-# Set the timeout signal
-signal.signal(signal.SIGALRM, timeout_handler)
 
 
 @bp.route('', methods=['GET', 'OPTIONS'])
@@ -24,13 +16,10 @@ def get_calories():
     # end_date = request.args.get('endDate')
     # group_by = request.args.get('groupBy') 
     logger.info('Received GET request for /api/calories')
-    signal.alarm(10)  # Set the timeout to 10 seconds
-
 
     try:
         # Simulate some processing
         response = jsonify({'message': 'Hello from calories'})
-        signal.alarm(0)  # Disable the alarm
         return response, 200
     
     except Exception as e:
