@@ -11,8 +11,9 @@ export default function AddFoodScreen() {
   const handleSubmit = async () => {
     try {
       console.log('making a request to the backend');
+      console.log("url endnpoint: " + `${backendURL}/api/calories`)
       const response = await fetch(`${backendURL}/api/calories`, {
-        method: 'POST',
+        method: 'POST', 
         headers: {
           'Content-Type': 'application/json',
         },
