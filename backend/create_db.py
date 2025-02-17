@@ -1,7 +1,8 @@
 import os
 import argparse
 
-from run import create_app, db
+from run import create_app
+from database import db
 from models import User, Food, FoodEntry
 
 def create_test_users(db):
