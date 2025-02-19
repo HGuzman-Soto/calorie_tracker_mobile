@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from routes import calories_routes, food_entries_routes
+
 from database import db
 
 DB_PATH = "food_tracker.db"
@@ -21,6 +22,7 @@ def create_app():
 
     app.register_blueprint(calories_routes.bp)
     app.register_blueprint(food_entries_routes.bp)
+    app.register_blueprint(auth_routes.bp)
     
     return app
 
