@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function AddFoodScreen() {
-  const backendURL = process.env.EXPO_PUBLIC_BACKEND_URL
+  const backendURL = process.env.EXPO_PUBLIC_BACKEND_URL;
   const router = useRouter(); // For going back or navigating around
   const [foodName, setFoodName] = useState('');
   const [calories, setCalories] = useState('');
@@ -11,7 +11,8 @@ export default function AddFoodScreen() {
   const handleSubmit = async () => {
     try {
       console.log('making a request to the backend');
-      const response = await fetch(`${backendURL}/api/calories`, {
+      console.log(`${backendURL}/api/food_entries/new/food`);
+      const response = await fetch(`${backendURL}/api/food_entries/new/food`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,14 +20,37 @@ export default function AddFoodScreen() {
         body: JSON.stringify({ foodName, calories }),
       });
 
-      if (response.ok) {
-        Alert.alert('Success', 'Food added successfully');
+      console.log('got response', response);
+
+      if (!response.ok) {
+        Alert.alert('Error', 'Failed to add new food');
+        return;
+      }
+
+      const responseData = await response.json();
+      const food_id = responseData.entry.food_id;
+      const user_id = 1; // Manually set this while we do auth
+
+      // Add food entry
+      const entryResponse = await fetch(
+        `${backendURL}/api/food_entries/new/food_entry`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id, food_id }),
+        }
+      );
+
+      if (entryResponse.ok) {
+        Alert.alert('Success', 'Food entry added successfully');
         router.back();
       } else {
-        Alert.alert('Error', 'Failed to add food');
+        Alert.alert('Error', 'Failed to add food entry');
       }
     } catch (error) {
-      console.error('Error adding food:', error);
+      console.error('Error:', error);
       Alert.alert('Error', 'Failed to connect to the server');
     }
   };
