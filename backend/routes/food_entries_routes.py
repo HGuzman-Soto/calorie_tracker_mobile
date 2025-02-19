@@ -12,7 +12,7 @@ from database import db
 from models import Food, FoodEntry
 from datetime import datetime
 
-bp = Blueprint('food_entry', __name__, url_prefix='/api/food_entries')
+bp = Blueprint('food_entries', __name__, url_prefix='/api/food_entries')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -24,18 +24,20 @@ def create_new_food():
     if not data:
         return jsonify({'message': 'No data provided'}), 400
     print('data:', data)
-    food_name = data.get('food_name')
+    food_name = data.get('foodName')
+    print("food_name", food_name)
     food_name = food_name.lower().strip()
     calories = data.get('calories')
 
     if not food_name or not calories:
         return jsonify({'message': 'Missing food_name or calories'}), 400
     try:
+        print("going to fetch food from database")
         food = Food.query.filter(Food.name.ilike(food_name)).first()
         print("food from db", food)
         if food:
             print('food already exist, existing')
-            return jsonify({'message': 'Food already exists'}), 200
+            return jsonify({'message': 'Food already exists', 'entry': food.to_dict()}), 200
     
         new_food = Food(
                 name=food_name,
