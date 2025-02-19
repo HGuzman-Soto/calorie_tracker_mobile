@@ -1,7 +1,8 @@
 import os
 from flask import Flask
 from flask_cors import CORS
-from routes import calories_routes, food_entry, auth_routes
+from routes import calories_routes, food_entries_routes
+
 from database import db
 
 DB_PATH = "food_tracker.db"
@@ -12,13 +13,15 @@ def create_app():
     CORS(app)
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_PATH}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+    # For quick testing
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    
     db.init_app(app)
     with app.app_context():
         db.create_all()
 
     app.register_blueprint(calories_routes.bp)
-    app.register_blueprint(food_entry.bp)
+    app.register_blueprint(food_entries_routes.bp)
     app.register_blueprint(auth_routes.bp)
     
     return app
