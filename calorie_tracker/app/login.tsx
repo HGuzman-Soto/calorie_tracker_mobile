@@ -1,42 +1,53 @@
 import { View, Text, TextInput, Button, Alert } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
-
+import { useAuth } from '@/hooks/useAuth';
 
 export default function LoginScreen() {
-  const backendURL = process.env.EXPO_PUBLIC_BACKEND_URL
+  const backendURL = process.env.EXPO_PUBLIC_BACKEND_URL;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useAuth();
 
   const handleSubmit = async () => {
-      try {
-        console.log('making a request to the backend');
-        console.log("url endnpoint: " + `${backendURL}/api/auth/login`)
-        const response = await fetch(`${backendURL}/api/auth/login`, {
-          method: 'POST', 
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, password }),
-        });
-  
-        if (response.ok) {
-          Alert.alert('Success', 'User added successfully');
-          router.replace('/(tabs)/home')
-        } else {
-          Alert.alert('Error', 'Failed to add user');
-        }
-      } catch (error) {
-        console.error('Error adding user:', error);
-        Alert.alert('Error', 'Failed to connect to the server');
+    try {
+      console.log('making a request to the backend');
+      console.log('url endnpoint: ' + `${backendURL}/api/auth/login`);
+      const response = await fetch(`${backendURL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      await login(username, password);
+
+      if (response.ok) {
+        router.replace('/(tabs)/home');
+      } else {
+        Alert.alert('Error', 'Failed to add user');
       }
-      
-    };
-  
+    } catch (error) {
+      console.error('Error adding user:', error);
+      Alert.alert('Error', 'Failed to connect to the server');
+    }
+  };
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20, backgroundColor: '#121212' }}>
-      <Text style={{ fontSize: 24, marginBottom: 20, color: '#fff' }}>Welcome! Please log in.</Text>
-      
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#121212',
+      }}
+    >
+      <Text style={{ fontSize: 24, marginBottom: 20, color: '#fff' }}>
+        Welcome! Please log in.
+      </Text>
+
       <TextInput
         style={{
           width: '100%',
@@ -49,8 +60,8 @@ export default function LoginScreen() {
           color: '#fff', // Ensure input text is white
           backgroundColor: '#1e1e1e', // Dark background for input field
         }}
-        placeholder="Username"
-        placeholderTextColor="#aaa"
+        placeholder='Username'
+        placeholderTextColor='#aaa'
         value={username}
         onChangeText={setUsername}
       />
@@ -67,14 +78,14 @@ export default function LoginScreen() {
           color: '#fff', // Ensure input text is white
           backgroundColor: '#1e1e1e', // Dark background for input field
         }}
-        placeholder="Password"
-        placeholderTextColor="#aaa"
+        placeholder='Password'
+        placeholderTextColor='#aaa'
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
 
-      <Button title="Log In" onPress={handleSubmit} />
+      <Button title='Log In' onPress={handleSubmit} />
     </View>
   );
 }
