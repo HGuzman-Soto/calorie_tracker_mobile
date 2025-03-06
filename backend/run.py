@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 from flask_cors import CORS
-from routes import calories_routes, food_entries_routes
+from routes import calories_routes, food_entries_routes, auth_routes
 
 from database import db
 
